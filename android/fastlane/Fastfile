@@ -21,8 +21,8 @@ platform :android do
     
     UI.success("✅ APK đã được build thành công tại: #{apk_path}")
     
-    # Trả về đường dẫn APK
-    return apk_path
+    # Trả về đường dẫn APK (giá trị cuối cùng sẽ tự động được trả về)
+    apk_path
   end
 
   desc "Build Android APK với version name và build number"
@@ -40,7 +40,8 @@ platform :android do
     
     UI.success("✅ APK version #{version_name} (#{build_number}) đã được build tại: #{apk_path}")
     
-    return apk_path
+    # Trả về đường dẫn APK (giá trị cuối cùng sẽ tự động được trả về)
+    apk_path
   end
 
   desc "Build và upload APK (có thể mở rộng để upload lên Firebase App Distribution, Play Store, etc.)"
@@ -52,7 +53,8 @@ platform :android do
     
     UI.message("📦 APK sẵn sàng để upload: #{apk_path}")
     
-    return apk_path
+    # Trả về đường dẫn APK (giá trị cuối cùng sẽ tự động được trả về)
+    apk_path
   end
 end
 
