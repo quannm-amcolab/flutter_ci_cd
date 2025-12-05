@@ -1,0 +1,85 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'lib/**'
+      - 'android/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/android-build.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'lib/**'
+      - 'android/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/android-build.yml'
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - debug
+
+jobs:
+  build:
+    name: Build Android APK với Fastlane
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+          flutter doctor -v
+
+      - name: Setup Ruby và Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: android
+          bundler-cache: true
+
+      - name: Build APK với Fastlane
+        working-directory: android
+        run: |
+          bundle exec fastlane build_apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+      - name: APK build info
+        run: |
+          echo "✅ APK đã được build thành công!"
+          echo "📦 File APK: build/app/outputs/flutter-apk/app-release.apk"
+          ls -lh build/app/outputs/flutter-apk/
+

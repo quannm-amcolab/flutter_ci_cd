@@ -1,0 +1,4 @@
+# Appfile cho Fastlane Android
+# Thông tin về package name và signing
+package_name("com.example.flutter_ci_cd")
+

@@ -43,3 +43,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+*.ipa
+*.apk
+*.aab
+
+# Ruby / Fastlane
+.bundle/
+vendor/bundle/
+Gemfile.lock
