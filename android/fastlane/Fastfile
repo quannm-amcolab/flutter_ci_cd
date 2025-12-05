@@ -4,22 +4,25 @@ default_platform(:android)
 platform :android do
   desc "Build Android APK"
   lane :build_apk do
+    # Lấy đường dẫn root của dự án Flutter (2 cấp lên từ android/fastlane/)
+    project_root = File.expand_path("../..", __dir__)
+    
     # Đảm bảo Flutter dependencies được cài đặt
-    sh("cd #{lane_context[SharedValues::ROOT]} && flutter pub get")
+    sh("cd #{project_root} && flutter pub get")
     
     # Clean build trước
-    sh("cd #{lane_context[SharedValues::ROOT]} && flutter clean")
+    sh("cd #{project_root} && flutter clean")
     
     # Build APK release
-    sh("cd #{lane_context[SharedValues::ROOT]} && flutter build apk --release")
+    sh("cd #{project_root} && flutter build apk --release")
     
     # APK sẽ được tạo tại: build/app/outputs/flutter-apk/app-release.apk
-    apk_path = lane_context[SharedValues::ROOT] + "/build/app/outputs/flutter-apk/app-release.apk"
+    apk_path = File.join(project_root, "build/app/outputs/flutter-apk/app-release.apk")
     
     UI.success("✅ APK đã được build thành công tại: #{apk_path}")
     
-    # Trả về đường dẫn APK
-    return apk_path
+    # Trả về đường dẫn APK (giá trị cuối cùng sẽ tự động được trả về)
+    apk_path
   end
 
   desc "Build Android APK với version name và build number"
@@ -27,14 +30,18 @@ platform :android do
     version_name = options[:version_name] || "1.0.0"
     build_number = options[:build_number] || "1"
     
-    # Build với version cụ thể
-    sh("cd #{lane_context[SharedValues::ROOT]} && flutter build apk --release --build-name=#{version_name} --build-number=#{build_number}")
+    # Lấy đường dẫn root của dự án Flutter (2 cấp lên từ android/fastlane/)
+    project_root = File.expand_path("../..", __dir__)
     
-    apk_path = lane_context[SharedValues::ROOT] + "/build/app/outputs/flutter-apk/app-release.apk"
+    # Build với version cụ thể
+    sh("cd #{project_root} && flutter build apk --release --build-name=#{version_name} --build-number=#{build_number}")
+    
+    apk_path = File.join(project_root, "build/app/outputs/flutter-apk/app-release.apk")
     
     UI.success("✅ APK version #{version_name} (#{build_number}) đã được build tại: #{apk_path}")
     
-    return apk_path
+    # Trả về đường dẫn APK (giá trị cuối cùng sẽ tự động được trả về)
+    apk_path
   end
 
   desc "Build và upload APK (có thể mở rộng để upload lên Firebase App Distribution, Play Store, etc.)"
@@ -46,7 +53,8 @@ platform :android do
     
     UI.message("📦 APK sẵn sàng để upload: #{apk_path}")
     
-    return apk_path
+    # Trả về đường dẫn APK (giá trị cuối cùng sẽ tự động được trả về)
+    apk_path
   end
 end
 
